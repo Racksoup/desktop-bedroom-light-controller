@@ -14,7 +14,7 @@ class UI {
 	protected:
 		void slider_clicked(Gtk::Scale& slider, const std::string& option);
 		void color_clicked(int color);
-		void bri_clicked(size_t i);
+		void bri_clicked(const std::string& bri);
 		void on_clicked();
 		void off_clicked();
 

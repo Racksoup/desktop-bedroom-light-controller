@@ -12,13 +12,13 @@ UI::UI() :
   m_slidHue(Gtk::Orientation::HORIZONTAL),
   m_slidSat(Gtk::Orientation::HORIZONTAL),
   m_btnsColors{      
-      Gtk::Button("Red"), Gtk::Button("Green"), Gtk::Button("Blue"),
-      Gtk::Button("Yellow"), Gtk::Button("Orange"), Gtk::Button("Purple"),
-      Gtk::Button("Pink"), Gtk::Button("Cyan"), Gtk::Button("Magenta"),
-      Gtk::Button("Lime"), Gtk::Button("Teal"), Gtk::Button("Brown")
+      Gtk::Button("Red"), Gtk::Button("Orange"), Gtk::Button("Yellow"),
+      Gtk::Button("Forest"), Gtk::Button("Green"), Gtk::Button("Mint"),
+      Gtk::Button("Cyan"), Gtk::Button("Navy"), Gtk::Button("Blue"),
+      Gtk::Button("Purple"), Gtk::Button("Magenta"), Gtk::Button("Rose")
   },
   m_btnsBri{
-      Gtk::Button("Bright"),Gtk::Button("High"), Gtk::Button("Medium"), Gtk::Button("Low")  
+      Gtk::Button("Low"),Gtk::Button("Medium"), Gtk::Button("High"), Gtk::Button("Bright")  
   },
   m_btnOn("On"),
   m_btnOff("Off")
@@ -54,8 +54,9 @@ UI::UI() :
 	m_grid1.set_row_homogeneous(true); 
 	m_grid1.set_column_homogeneous(true); 
 
+	std::string briLevels[] = {"20", "40", "120", "254"};
 	for (size_t i = 0; i < m_btnsBri.size(); ++i) {
-		m_btnsBri[i].signal_clicked().connect([this, i] { this->bri_clicked(i); });
+		m_btnsBri[i].signal_clicked().connect([this, briLevels, i] { this->bri_clicked(briLevels[i]); });
 		m_grid1.attach(m_btnsBri[i], (i % 4) + 1, (i / 4) + 1, 1, 1);
 	}
 
@@ -98,7 +99,6 @@ void UI::slider_clicked(Gtk::Scale& slider, const std::string& option)
 		curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.10:42000/api/connor-bedroom-light/set-state");
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); 
 		res = curl_easy_perform(curl);
 		if (res != CURLE_OK) {
 			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
@@ -106,26 +106,88 @@ void UI::slider_clicked(Gtk::Scale& slider, const std::string& option)
         
 		curl_easy_cleanup(curl);
 	}
-
-	std::cout << data << std::endl;
 }
 
 void UI::color_clicked(int color)
 {
-	std::cout << color << std::endl;
+	std::string data = "{\"hue\":" + std::to_string(static_cast<int>(color)) + ",\"sat\":" + std::string("203") + "}";
+
+	CURL *curl = curl_easy_init();
+	if (curl) {
+		CURLcode res;
+		struct curl_slist *headers = nullptr;
+		headers = curl_slist_append(headers, "Content-Type: application/json");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.10:42000/api/connor-bedroom-light/set-state");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+		}
+        
+		curl_easy_cleanup(curl);
+	}
 }
 
-void UI::bri_clicked(size_t i)
+void UI::bri_clicked(const std::string& bri)
 {
-	std::cout << i << std::endl;
+	std::string data = "{\"bri\":" + bri + "}";
+
+	CURL *curl = curl_easy_init();
+	if (curl) {
+		CURLcode res;
+		struct curl_slist *headers = nullptr;
+		headers = curl_slist_append(headers, "Content-Type: application/json");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.10:42000/api/connor-bedroom-light/set-state");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+		}
+        
+		curl_easy_cleanup(curl);
+	}
 }
 
 void UI::on_clicked()
 {
-	std::cout << "on" << std::endl;
+	std::string data = "{\"bri\":" + std::string("254") + ",\"sat\":" + std::string("1") + "}";
+
+	CURL *curl = curl_easy_init();
+	if (curl) {
+		CURLcode res;
+		struct curl_slist *headers = nullptr;
+		headers = curl_slist_append(headers, "Content-Type: application/json");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.10:42000/api/connor-bedroom-light/set-state");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+		}
+        
+		curl_easy_cleanup(curl);
+	}
 }
 
 void UI::off_clicked()
 {
-	std::cout << "off" << std::endl;
+	std::string data = "{\"bri\":" + std::string("1") + "}";
+
+	CURL *curl = curl_easy_init();
+	if (curl) {
+		CURLcode res;
+		struct curl_slist *headers = nullptr;
+		headers = curl_slist_append(headers, "Content-Type: application/json");
+		curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.2.10:42000/api/connor-bedroom-light/set-state");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+		}
+        
+		curl_easy_cleanup(curl);
+	}
 }
