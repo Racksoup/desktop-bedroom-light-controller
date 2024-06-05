@@ -1,6 +1,5 @@
 #include <gtkmm/window.h>
 #include "UI.h"
-#include "Comms.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -10,5 +9,4 @@ class MainWindow : public Gtk::Window
 
 	protected:
 		UI m_ui;
-		Comms m_Comms;
 };
