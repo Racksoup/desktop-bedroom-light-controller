@@ -1,6 +1,8 @@
 #include <gtkmm/button.h>
 #include <gtkmm/box.h>
 #include <gtkmm/scale.h>
+#include <gtkmm/label.h>
+#include <gtkmm/grid.h>
 
 class UI {
 	public:
@@ -10,11 +12,17 @@ class UI {
 		Gtk::Box m_box;
 
 	protected:
-		void slider_clicked();
+		void slider_clicked(Gtk::Scale& slider);
+		void color_clicked(int color);
+		void bri_clicked(size_t i);
+		void on_clicked();
+		void off_clicked();
 
+		Gtk::Label m_labelBri, m_labelHue, m_labelSat;
 		Gtk::Scale m_slidBri, m_slidHue, m_slidSat;
-		Gtk::Button m_btnsColors[12];
-		Gtk::Button m_btnsBri[4];
-		Gtk::Button m_btnOn;
-		Gtk::Button m_btnOff;
+		Gtk::Grid m_grid, m_grid1;
+		Gtk::Box m_box1;
+		std::array<Gtk::Button, 12> m_btnsColors;
+		std::array<Gtk::Button, 4> m_btnsBri;
+		Gtk::Button m_btnOn, m_btnOff;
 };
